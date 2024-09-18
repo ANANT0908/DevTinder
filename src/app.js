@@ -2,6 +2,8 @@ const express = require("express");
 
 const app = express();
 
+// diff routes ?,+,(),* and regex 
+
 app.get("/user/:userId",(req, res) => {
   console.log(req.params);
   res.send({firstname:"Anant", lastname:"Verma"});
