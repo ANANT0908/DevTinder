@@ -60,6 +60,34 @@ app.get("/feed", async (req, res) => {
     res.status(400).send("Error getting the user " + err.message);
   }
 });
+app.delete("/user", async (req, res) => {
+  try {
+    const resp = await User.findByIdAndDelete(req.body.userId);
+   res.send(resp);
+  } catch (err) {
+    res.status(400).send("Error Deleting the user " + err.message);
+  }
+});
+app.patch("/user", async (req, res) => {
+  try {
+    const userId = req.body.userId
+    const body = req.body
+    const resp = await User.findByIdAndUpdate({_id :userId}, body,{returnDocument:"before"});
+   res.send(resp);
+  } catch (err) {
+    res.status(400).send("Error Updating the user by id " + err.message);
+  }
+});
+app.patch("/userByEmailId", async (req, res) => {
+  try {
+    const emailId = req.body.emailId
+    const body = req.body
+    const resp = await User.findOneAndUpdate({emailId :emailId}, body,{returnDocument:"before"});
+   res.send(resp);
+  } catch (err) {
+    res.status(400).send("Error Updating the user by email" + err.message);
+  }
+});
 
 connectDB()
   .then(() => {
