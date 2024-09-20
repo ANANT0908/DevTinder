@@ -35,6 +35,19 @@ app.get("/user", async (req, res) => {
     res.status(400).send("Error getting the user " + err.message);
   }
 });
+app.get("/userById", async (req, res) => {
+  const id = req.body.id;
+  try {
+    const users = await User.findById(id);
+    if (users.length === 0) {
+      res.status(404).send("User Not Found");
+    } else {
+      res.send(users);
+    }
+  } catch (err) {
+    res.status(400).send("Error getting the user " + err.message);
+  }
+});
 app.get("/feed", async (req, res) => {
   try {
     const users = await User.find({});
