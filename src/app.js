@@ -3,15 +3,11 @@ const connectDB = require("./cofig/database");
 const app = express();
 const User = require("./modals/user");
 
-app.post("/signup", async (req, res) => {
-  console.log("enter");
-  const user = new User({
-    firstName: "Anant1",
-    lastName: "Verma1",
-    emailId: "anant1@gmail.com",
-    password: "anant1@123"
-  });
+app.use(express.json());
 
+app.post("/signup", async (req, res) => {
+  //Creating a new instance of the User Modal
+  const user = new User(req.body);
   try {
     await user.save();
     res.send("User Added Successfully");
