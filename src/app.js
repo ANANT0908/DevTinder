@@ -63,27 +63,48 @@ app.get("/feed", async (req, res) => {
 app.delete("/user", async (req, res) => {
   try {
     const resp = await User.findByIdAndDelete(req.body.userId);
-   res.send(resp);
+    res.send(resp);
   } catch (err) {
     res.status(400).send("Error Deleting the user " + err.message);
   }
 });
-app.patch("/user", async (req, res) => {
+app.patch("/user/:userId", async (req, res) => {
   try {
-    const userId = req.body.userId
-    const body = req.body
-    const resp = await User.findByIdAndUpdate({_id :userId}, body,{returnDocument:"before", runValidators:true});
-   res.send(resp);
+    const userId = req.params?.userId;
+    const data = req.body;
+
+    const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
+
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_UPDATES.includes(k)
+    );
+   
+    if (!isUpdateAllowed) {
+      throw new Error("Update not allowed");
+    }
+    if (data.skills.length > 10) {
+      throw new Error("Skills cannot be more than 10");
+    }
+
+    const resp = await User.findByIdAndUpdate({ _id: userId }, data, {
+      returnDocument: "before",
+      runValidators: true,
+    });
+    res.send(resp);
   } catch (err) {
     res.status(400).send("Error Updating the user by id " + err.message);
   }
 });
+
 app.patch("/userByEmailId", async (req, res) => {
   try {
-    const emailId = req.body.emailId
-    const body = req.body
-    const resp = await User.findOneAndUpdate({emailId :emailId}, body,{returnDocument:"before",runValidators:true});
-   res.send(resp);
+    const emailId = req.body.emailId;
+    const body = req.body;
+    const resp = await User.findOneAndUpdate({ emailId: emailId }, body, {
+      returnDocument: "before",
+      runValidators: true,
+    });
+    res.send(resp);
   } catch (err) {
     res.status(400).send("Error Updating the user by email" + err.message);
   }
