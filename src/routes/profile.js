@@ -7,7 +7,12 @@ const validator = require("validator");
 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
   try {
-    res.send(req.user);
+    if(req.user){
+      res.send(req.user);
+    }
+    else{
+      res.status(400).send("ERROR : " + err.message);
+    }
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
   }
